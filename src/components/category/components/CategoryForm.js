@@ -39,6 +39,7 @@ export const CategoryForm = ({ isOpen, handleClose, setCategories }) => {
             console.log(response)
             if (!response.error){//Operador spreed (...) regresa los objetos de dada clase
               setCategories(categories => [...categories, response.data])
+              handleCloseForm();
               Alert.fire({
                 title: titleExito,
                 text: msjExito,

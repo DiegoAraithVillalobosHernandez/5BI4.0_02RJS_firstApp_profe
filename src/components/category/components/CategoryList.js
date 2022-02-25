@@ -56,6 +56,32 @@ export const CategoryList = () => {
           </Badge>
         ),
     },
+    {
+      name: "Acciones",
+      cell: (row) =>(
+        <>
+          <ButtonCircle 
+          icon="edit" 
+          size={16} 
+          type="btn btn-warning btn-circle me-2"
+          onClickFunct={() => { }}/>
+          {
+            row.status.description ==="Activo"?
+            <ButtonCircle
+              icon="trash" 
+              size={16} 
+              type="btn btn-danger btn-circle"
+              onClickFunct={() => { }}/>
+            :
+            <ButtonCircle 
+              icon="check" 
+              size={16} 
+              type="btn btn-success btn-circle"
+              onClickFunct={() => {}}/>
+          }
+        </>
+      )
+    }
   ];
 
   const paginationOptions = {
