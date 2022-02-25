@@ -83,8 +83,9 @@ export const CategoryList = () => {
                 <CategoryForm
                   isOpen={isOpen}
                   handleClose={() => setIsOpen(false)}
+                  setCategories={setCategories}
                 />
-                <ButtonCircle type={"btn btn-success btn-circle"} onClickFunct={() => { }} icon="plus" size={20} />
+                <ButtonCircle type={"btn btn-success btn-circle"} onClickFunct={() => setIsOpen(true)} icon="plus" size={20} />
               </Col>
             </Row>
           </Card.Header>
