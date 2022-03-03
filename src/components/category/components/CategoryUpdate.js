@@ -9,11 +9,10 @@ import Alert, {
     msjExito, titleExito} from "../../../shared/plugins/alert"
 import axios from "../../../shared/plugins/axios";
 
-export const CategoryUpdate = ({ isOpenU, handleClose, setCategories, row }) => {
-    console.log(row)
+export const CategoryUpdate = ({ isOpenU, handleClose, setCategories, category }) => {
   const formik = useFormik({
     initialValues: {
-      description: "",
+      description: {category},
       status: {
         id: 1,
         description: "Activo",
@@ -35,7 +34,7 @@ export const CategoryUpdate = ({ isOpenU, handleClose, setCategories, row }) => 
         showLoaderOnConfirm: true,
         icon: "warning",
         preConfirm: () =>{
-          return axios({url: "/category/", method: "UPDATE", data: JSON.stringify(values)})
+          return axios({url: "/category/", method: "PUT", data: JSON.stringify(values)})
           .then ((response) =>{
             console.log(response)
             if (!response.error){//Operador spreed (...) regresa los objetos de dada clase
@@ -81,8 +80,7 @@ export const CategoryUpdate = ({ isOpenU, handleClose, setCategories, row }) => 
             <Form.Label className="form-label">Nombre</Form.Label>
             <Form.Control
               name="description"
-              placeholder="Remplazo"
-              value={formik.values.description}
+              value={category.description}
               onChange={formik.handleChange}
             />
             {formik.errors.description ? (

@@ -23,6 +23,7 @@ export const CategoryList = () => {
   const [categories, setCategories] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   const [isOpenU, setIsOpenU] = useState(false);
+  const [category, setCategory] = useState("");
 
   const filteredItems = categories.filter(
     item => item.description && item.description.toLowerCase().includes(filterText.toLowerCase()),
@@ -38,6 +39,11 @@ export const CategoryList = () => {
         console.log(error);
       });
   };
+  
+  const openU = (category) =>{
+    setIsOpenU(true);
+    setCategory(category); 
+  }
 
   const statusChange = (category) =>{
     Alert.fire({
@@ -135,17 +141,19 @@ export const CategoryList = () => {
       name: "Acciones",
       cell: (row) =>(
         <>
-          <CategoryUpdate
+        <CategoryUpdate
             isOpenU={isOpenU}
             handleClose={() => setIsOpenU(false)}
             setCategories={setCategories}
-            row= {row.description}
+            category= {category}
           />
           <ButtonCircle 
           icon="edit" 
           size={16} 
           type="btn btn-warning btn-circle me-2"
-          onClickFunct={() => setIsOpenU(true)}/>
+          onClickFunct={() => openU(row)}
+          //onClickFunct={() => setIsOpenU(true)}
+          />
           {
             row.status.description ==="Activo"?
             <ButtonCircle
