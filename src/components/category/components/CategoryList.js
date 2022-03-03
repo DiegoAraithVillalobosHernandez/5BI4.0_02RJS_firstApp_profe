@@ -80,7 +80,6 @@ export const CategoryList = () => {
           data: JSON.stringify(categoryUpdated)
         })
         .then((response) => {
-          console.log(response)
           if (response.error) {
             Alert.fire({
               title: titleError,
@@ -141,12 +140,15 @@ export const CategoryList = () => {
       name: "Acciones",
       cell: (row) =>(
         <>
-        <CategoryUpdate
+          {category != "" &&(
+            <CategoryUpdate
             isOpenU={isOpenU}
             handleClose={() => setIsOpenU(false)}
             setCategories={setCategories}
+            categories={categories}
             category= {category}
-          />
+            />
+          )}
           <ButtonCircle 
           icon="edit" 
           size={16} 
