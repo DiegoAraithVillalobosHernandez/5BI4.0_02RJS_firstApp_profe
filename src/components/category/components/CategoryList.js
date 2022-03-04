@@ -8,14 +8,15 @@ import { ButtonCircle } from "../../../shared/components/ButtonCircle";
 import { CustomLoader } from "../../../shared/components/CustomLoader";
 import { FilterComponent } from "../../../shared/components/FilterComponent";
 import Alert, {
-  msjExito, 
-  titleExito, 
-  msjError, 
-  titleError, 
-  msjConfirmacion, 
-  titleConfirmacion
+  msjExito,
+  titleExito,
+  msjError,
+  titleError,
+  msjConfirmacion,
+  titleConfirmacion,
 } from "../../../shared/plugins/alert";
-import { CategoryUpdate } from "./CategoryUpdate"
+import { CategoryUpdate } from "./CategoryUpdate";
+import { CategoryFormEdit } from "./CategoryFormEdit";
 
 export const CategoryList = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -23,10 +24,12 @@ export const CategoryList = () => {
   const [categories, setCategories] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   const [isOpenU, setIsOpenU] = useState(false);
-  const [category, setCategory] = useState("");
+  const [categorySelected, setCategorySelected] = useState({});
 
   const filteredItems = categories.filter(
-    item => item.description && item.description.toLowerCase().includes(filterText.toLowerCase()),
+    (item) =>
+      item.description &&
+      item.description.toLowerCase().includes(filterText.toLowerCase())
   );
 
   const getCategories = () => {
@@ -39,13 +42,13 @@ export const CategoryList = () => {
         console.log(error);
       });
   };
-  
-  const openU = (category) =>{
-    setIsOpenU(true);
-    setCategory(category); 
-  }
 
-  const statusChange = (category) =>{
+  const openU = (category) => {
+    setIsOpenU(true);
+    setCategorySelected(category);
+  };
+
+  const statusChange = (category) => {
     Alert.fire({
       title: titleConfirmacion,
       text: msjConfirmacion,
@@ -59,55 +62,54 @@ export const CategoryList = () => {
       icon: "warning",
       backdrop: true,
       allowOutsideClick: !Alert.isLoading,
-      preConfirm: () =>{
-        let categoryUpdated = {}
+      preConfirm: () => {
+        let categoryUpdated = {};
         if (category.status.description === "Activo") {
           categoryUpdated = {
-            ...category, 
-            status:{id:2, description: "Inactivo"}
-          }  
-        }else{
+            ...category,
+            status: { id: 2, description: "Inactivo" },
+          };
+        } else {
           categoryUpdated = {
-            ...category, 
-            status:{id:1, description: "Activo"}
-          }  
+            ...category,
+            status: { id: 1, description: "Activo" },
+          };
         }
 
-
         return axios({
-          url: "/category/", 
+          url: "/category/",
           method: "PUT",
-          data: JSON.stringify(categoryUpdated)
+          data: JSON.stringify(categoryUpdated),
         })
-        .then((response) => {
-          if (response.error) {
-            Alert.fire({
-              title: titleError,
-              text: msjError,
-              confirmButtonText: "Aceptar",
-              confirmButtonColor: "#198754",
-              icon: "error"
-            })
-          } else {
-            let categoriesTemp = categories.filter(it => it.id != category.id)
-            setCategories([...categoriesTemp, categoryUpdated])
-            Alert.fire({
-              title: titleExito,
-              text: msjExito,
-              confirmButtonText: "Aceptar",
-              confirmButtonColor: "#198754",
-              icon: "success"
-            })
-          }
-
-        })
-        .catch((error) =>{
-          console.log(error)
-
-        })
-      }
+          .then((response) => {
+            if (response.error) {
+              Alert.fire({
+                title: titleError,
+                text: msjError,
+                confirmButtonText: "Aceptar",
+                confirmButtonColor: "#198754",
+                icon: "error",
+              });
+            } else {
+              let categoriesTemp = categories.filter(
+                (it) => it.id != category.id
+              );
+              setCategories([...categoriesTemp, categoryUpdated]);
+              Alert.fire({
+                title: titleExito,
+                text: msjExito,
+                confirmButtonText: "Aceptar",
+                confirmButtonColor: "#198754",
+                icon: "success",
+              });
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      },
     });
-  }
+  };
 
   useEffect(() => {
     setIsLoading(true);
@@ -138,9 +140,9 @@ export const CategoryList = () => {
     },
     {
       name: "Acciones",
-      cell: (row) =>(
+      cell: (row) => (
         <>
-          {category != "" &&(
+          {/* {category != "" &&(
             <CategoryUpdate
             isOpenU={isOpenU}
             handleClose={() => setIsOpenU(false)}
@@ -148,31 +150,39 @@ export const CategoryList = () => {
             categories={categories}
             category= {category}
             />
-          )}
-          <ButtonCircle 
-          icon="edit" 
-          size={16} 
-          type="btn btn-warning btn-circle me-2"
-          onClickFunct={() => openU(row)}
-          //onClickFunct={() => setIsOpenU(true)}
+          )} */}
+          <ButtonCircle
+            icon="edit"
+            size={16}
+            type="btn btn-warning btn-circle me-2"
+            onClickFunct={() => {
+              setIsOpenU(true);
+              setCategorySelected(row);
+            }}
+            //onClickFunct={() => setIsOpenU(true)}
           />
-          {
-            row.status.description ==="Activo"?
+          {row.status.description === "Activo" ? (
             <ButtonCircle
-              icon="trash-2" 
-              size={16} 
+              icon="trash-2"
+              size={16}
               type="btn btn-danger btn-circle"
-              onClickFunct={() => {statusChange(row) }}/>
-            :
-            <ButtonCircle 
-              icon="check-circle" 
-              size={16} 
+              onClickFunct={() => {
+                statusChange(row);
+              }}
+            />
+          ) : (
+            <ButtonCircle
+              icon="check-circle"
+              size={16}
               type="btn btn-success btn-circle"
-              onClickFunct={() => {statusChange(row)}}/>
-          }
+              onClickFunct={() => {
+                statusChange(row);
+              }}
+            />
+          )}
         </>
-      )
-    }
+      ),
+    },
   ];
 
   const paginationOptions = {
@@ -185,8 +195,14 @@ export const CategoryList = () => {
       if (filterText) {
         setFilterText("");
       }
-    }
-    return <FilterComponent filterText={filterText} onFilter={e => setFilterText(e.target.value)} onClear={clear} />
+    };
+    return (
+      <FilterComponent
+        filterText={filterText}
+        onFilter={(e) => setFilterText(e.target.value)}
+        onClear={clear}
+      />
+    );
   });
 
   return (
@@ -202,7 +218,18 @@ export const CategoryList = () => {
                   handleClose={() => setIsOpen(false)}
                   setCategories={setCategories}
                 />
-                <ButtonCircle type={"btn btn-success btn-circle"} onClickFunct={() => setIsOpen(true)} icon="plus" size={20} />
+                <CategoryFormEdit
+                  isOpen={isOpenU}
+                  onClose={() => setIsOpenU(false)}
+                  setCategories={setCategories}
+                  {...categorySelected}
+                />
+                <ButtonCircle
+                  type={"btn btn-success btn-circle"}
+                  onClickFunct={() => setIsOpen(true)}
+                  icon="plus"
+                  size={20}
+                />
               </Col>
             </Row>
           </Card.Header>
