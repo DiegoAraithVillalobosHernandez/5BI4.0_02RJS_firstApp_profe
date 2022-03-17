@@ -35,9 +35,10 @@ export const LoginScreen = () => {
               type: "LOGIN",
               payload: response.data,
             };
+            dispatch(action);
+            navigation("/products", { replace: true });
           }
-          dispatch(action);
-          navigation("/products", { replace: true });
+          
         })
         .catch((error) => {
           Alert.fire({
@@ -135,10 +136,10 @@ export const LoginScreen = () => {
                       </Form>
                     </div>
                   </Col>
-                  <Col className="col-lg-6">
-                    <div>
-                      <h4></h4>
-                      <p></p>
+                  <Col className="col-lg-6 d-flex align-items-center gradient-custom-2">
+                    <div className="text-white px-3 py-4 p-md-5 mx-md-4">
+                      <h4>Marketplace | Aplicaciones Web</h4>
+                      <p className="small mb-0">lorem ipsium</p>
                     </div>
                   </Col>
                 </Row>
