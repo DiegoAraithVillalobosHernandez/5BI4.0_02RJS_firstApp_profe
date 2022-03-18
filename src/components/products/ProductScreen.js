@@ -1,5 +1,5 @@
 import axios from "axios";
-import React from "react";
+import React, {useState, useEffect} from "react";
 import { Card, Col, Row } from "react-bootstrap";
 import { ButtonCircle } from "../../shared/components/ButtonCircle";
 import { DataTableCustom } from "../../shared/components/DataTableCustom";

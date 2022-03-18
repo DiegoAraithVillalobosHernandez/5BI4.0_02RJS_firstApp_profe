@@ -1,17 +1,27 @@
 import React, { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { authContext } from "./authContext";
+import { AuthContext } from "./authContext";
 import axios from "../../shared/plugins/axios";
-import { useFormik } from "formik";
 import * as yup from "yup";
-import { Button, Row, Col, Container, Form, Figure } from "react-bootstrap";
+import { useFormik } from "formik";
+import {
+  Button,
+  Row,
+  Col,
+  Container,
+  Form,
+  Figure,
+  FormFloating,
+  FormGroup,
+} from "react-bootstrap";
 import FeatherIcon from "feather-icons-react";
-import img from "../../assets/img/marketplace.png";
+import img from "../../assets/img/marketplace.ico";
 import Alert from "../../shared/plugins/alert";
-
+ 
 export const LoginScreen = () => {
   const navigation = useNavigate();
-  const { dispatch } = useContext(authContext);
+  const { dispatch } = useContext(AuthContext);
+ 
   const formik = useFormik({
     initialValues: {
       username: "",
@@ -21,11 +31,15 @@ export const LoginScreen = () => {
       username: yup
         .string()
         .required("Campo obligatorio")
-        .min(4, "Mínimo 4 caracteres"),
+        .min(4, "Minimo cuatro caracteres"),
+      password: yup
+        .string()
+        .required("Campo obligatorio")
+        .min(4, "Minimo cuatro caracteres"),
     }),
     onSubmit: (values) => {
       axios({
-        url: "auth/login",
+        url: "/auth/login",
         method: "POST",
         data: JSON.stringify(values),
       })
@@ -36,13 +50,12 @@ export const LoginScreen = () => {
               payload: response.data,
             };
             dispatch(action);
-            navigation("/products", { replace: true });
+            navigation("/productos", { replace: true });
           }
-          
         })
         .catch((error) => {
           Alert.fire({
-            title: "Verifique los datos",
+            title: "verfique los datos",
             text: "Usuario y/o contraseña incorrectos",
             icon: "error",
             confirmButtonText: "Aceptar",
@@ -51,24 +64,24 @@ export const LoginScreen = () => {
         });
     },
   });
-
+ 
   const handleCancel = () => {
     navigation("/");
   };
-
+ 
   useEffect(() => {
     document.title = "MP | Login";
   }, []);
-
+ 
   return (
     <>
       <section
-        className="h-100 gradient-form"
+        className="h-100 gradient-from"
         style={{ backgroundColor: "#eee" }}
       >
         <Container className="py-5 h-100">
           <Row className="d-flex justify-content-center align-items-center h-100">
-            <Col className="col-xl-10">
+            <Col className="col-x1-10">
               <div className="card rounded-3 text-black">
                 <Row className="g-0">
                   <Col className="col-lg-6">
@@ -78,17 +91,17 @@ export const LoginScreen = () => {
                           <Figure.Image
                             width={125}
                             height={110}
-                            alt={"Marketplace"}
+                            alt="Markeplace"
                             src={img}
                           />
                         </Figure>
-                        <h4 className="mt-1 mb-5 pb-1">Marketplace</h4>
+                        <h4 className="mt-1 , mb-5 pb-1"> Markeplace</h4>
                       </div>
                       <Form onSubmit={formik.handleSubmit}>
                         <Form.Group>
-                          <Form.Label htmlFor="user">Usuario</Form.Label>
+                          <Form.Label htmlFor="user"> Usuario </Form.Label>
                           <Form.Control
-                            placeholder="diegovillalobos"
+                            placeholder="Usuario"
                             id="user"
                             autoComplete="off"
                             name="username"
@@ -100,46 +113,48 @@ export const LoginScreen = () => {
                           ) : null}
                         </Form.Group>
                         <Form.Group>
-                          <Form.Label htmlFor="password">Contraseña</Form.Label>
+                          <Form.Label htmlFor="password">
+                            {" "}
+                            contraseña{" "}
+                          </Form.Label>
                           <Form.Control
-                            placeholder="**********"
+                            placeholder="*******"
                             id="password"
                             autoComplete="off"
                             name="password"
                             value={formik.values.password}
                             onChange={formik.handleChange}
                           />
-                          {formik.errors.username ? (
+                          {formik.errors.password ? (
                             <span>{formik.errors.password}</span>
                           ) : null}
                         </Form.Group>
-                        <Form.Group className="form-outline mb-5">
+                        <FormGroup className="fomr-outline mb-5">
                           <div className="text-end pt-1 pb-1">
                             <a href="#" className="text-muted">
                               ¿Olvidaste tu contraseña?
                             </a>
                           </div>
-                        </Form.Group>
-                        <Form.Group>
-                          <div className="text-end pt-1 pb-1">
+                        </FormGroup>
+                        <FormGroup>
+                          <div className="text-center pt-1 pb-1">
                             <Button
                               variant="secondary"
                               className="btn-hover gradient-custom-2"
                               type="submit"
-                              disabled={!(formik.isValid && formik.dirty)}
+                              disabled={!formik.isValid && formik.dirty}
                             >
-                              <FeatherIcon icon={"log-in"} />
-                              Iniciar sesión
+                              <FeatherIcon icon="log-in" /> Iniciar sesión
                             </Button>
                           </div>
-                        </Form.Group>
+                        </FormGroup>
                       </Form>
                     </div>
                   </Col>
                   <Col className="col-lg-6 d-flex align-items-center gradient-custom-2">
                     <div className="text-white px-3 py-4 p-md-5 mx-md-4">
-                      <h4>Marketplace | Aplicaciones Web</h4>
-                      <p className="small mb-0">lorem ipsium</p>
+                      <h4>Marketplace | Aplicaciones web</h4>
+                      <p className="small mb-0"> </p>
                     </div>
                   </Col>
                 </Row>
