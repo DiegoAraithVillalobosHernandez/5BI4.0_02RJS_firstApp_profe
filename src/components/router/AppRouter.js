@@ -29,7 +29,7 @@ export const AppRouter = () => {
                   <Routes>
                     <Route path={"/home"} element={<HomeScreen />} />
                     <Route path="/contact" element={<ContactScreen />} />
-                    <Route path={"/"} element={<HomeScreen />} />
+                    <Route path={"/"} element={<ProductScreen />} />
                     <Route path="*" element={<div>Error 404</div>} />
                   </Routes>
                 </Container>

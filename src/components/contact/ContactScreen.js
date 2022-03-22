@@ -7,7 +7,13 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import img from "../../assets/img/river.jpg";
 import { useFormik } from "formik";
 import * as yup from "yup";
-import axios from '../../shared/plugins/axios'
+import axios from "../../shared/plugins/axios";
+import Alert, {
+  msjConfirmacion,
+  msjError,
+  titleConfirmacion,
+  titleError,
+} from "../../shared/plugins/alert";
 
 export const ContactScreen = () => {
   const bg = {
@@ -20,12 +26,12 @@ export const ContactScreen = () => {
 
   const formik = useFormik({
     initialValues: {
-      name: "",
+      fullname: "",
       email: "",
       comments: "",
     },
     validationSchema: yup.object().shape({
-      name: yup
+      fullname: yup
         .string()
         .required("Campo obligatorio")
         .min(4, "Mínimo 4 carácteres"),
@@ -39,10 +45,46 @@ export const ContactScreen = () => {
         .min(4, "Mínimo 4 carácteres"),
     }),
     onSubmit: (values) => {
-      console.log(values);
+      Alert.fire({
+        title: titleConfirmacion,
+        text: msjConfirmacion,
+        confirmButtonText: "Aceptar",
+        cancelButtonText: "Cancelar",
+        confirmButtonColor: "#198754",
+        cancelButtonColor: "#dc3545",
+        showCancelButton: true,
+        reverseButtons: true,
+        showLoaderOnConfirm: true,
+        icon: "warning",
+        preConfirm: () => {
+          return axios({
+            url: "/contact/",
+            method: "POST",
+            data: JSON.stringify(values),
+          })
+            .then((response) => {
+              console.log(response);
+              if (!response.error) {
+
+              }
+              return response;
+            })
+            .catch((error) => {
+              Alert.fire({
+                title: titleError,
+                text: msjError,
+                confirmButtonText: "Aceptar",
+                confirmButtonColor: "#198754",
+                icon: "error",
+              });
+            });
+        },
+        backdrop: true,
+        allowOutsideClick: !Alert.isLoading,
+      });
     },
   });
-  
+
   return (
     <div className="container-contact100">
       <div className="wrap-contact100">
@@ -50,13 +92,14 @@ export const ContactScreen = () => {
           <Form.Group className="mb-4">
             <Form.Label className="">Nombre completo</Form.Label>
             <Form.Control
-              name="name"
+              name="fullname"
               placeholder="Diego Villalobos"
-              value={formik.values.name}
+              value={formik.values.fullname}
               onChange={formik.handleChange}
             />
-            {formik.errors.name ? 
-            (<span className="error-text">{formik.errors.name}</span>): null}
+            {formik.errors.fullname ? (
+              <span className="error-text">{formik.errors.fullname}</span>
+            ) : null}
           </Form.Group>
           <Form.Group className="mb-4">
             <Form.Label className="">Correo electrónico</Form.Label>
@@ -66,8 +109,9 @@ export const ContactScreen = () => {
               value={formik.values.email}
               onChange={formik.handleChange}
             />
-            {formik.errors.email ? 
-            (<span className="error-text">{formik.errors.email}</span>): null}
+            {formik.errors.email ? (
+              <span className="error-text">{formik.errors.email}</span>
+            ) : null}
           </Form.Group>
           <Form.Group className="mb-4">
             <Form.Label className="">Comentarios</Form.Label>
@@ -79,8 +123,9 @@ export const ContactScreen = () => {
               value={formik.values.comments}
               onChange={formik.handleChange}
             />
-            {formik.errors.comments ? 
-            (<span className="error-text">{formik.errors.comments}</span>): null}
+            {formik.errors.comments ? (
+              <span className="error-text">{formik.errors.comments}</span>
+            ) : null}
           </Form.Group>
           <Form.Group className="mb-4">
             <Row>
