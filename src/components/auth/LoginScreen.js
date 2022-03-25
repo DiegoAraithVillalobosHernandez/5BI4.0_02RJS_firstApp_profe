@@ -50,7 +50,7 @@ export const LoginScreen = () => {
               payload: response.data,
             };
             dispatch(action);
-            navigation("/productos", { replace: true });
+            navigation("/products", { replace: true });
           }
         })
         .catch((error) => {

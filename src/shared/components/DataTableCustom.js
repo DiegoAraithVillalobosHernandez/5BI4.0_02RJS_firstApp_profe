@@ -43,6 +43,7 @@ export const DataTableCustom = ({columns, data, isLoading}) => {
       progressComponent={<CustomLoader />}
       subHeader
       subHeaderComponent={searchComponent}
+      noDataComponent= "No hay registros"
     />
   );
 }

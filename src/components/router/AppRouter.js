@@ -10,7 +10,7 @@ import { HomeScreen } from "../home/HomeScreen";
 import { ContactScreen } from "../contact/ContactScreen";
 import { PublicNavBar } from "../../shared/components/PublicNavBar";
 import { PrivateNavBar } from "../../shared/components/PrivateNavBar";
-import ProductScreen from "../products/ProductScreen";
+import {ProductScreen} from "../products/ProductScreen";
  
 export const AppRouter = () => {
   const { user } = useContext(AuthContext);
@@ -29,7 +29,7 @@ export const AppRouter = () => {
                   <Routes>
                     <Route path={"/home"} element={<HomeScreen />} />
                     <Route path="/contact" element={<ContactScreen />} />
-                    <Route path={"/"} element={<ProductScreen />} />
+                    <Route path={"/"} element={<HomeScreen />} />
                     <Route path="*" element={<div>Error 404</div>} />
                   </Routes>
                 </Container>
@@ -41,6 +41,7 @@ export const AppRouter = () => {
                   <Routes>
                     <Route path={"/category"} element={<CategoryScreen />} />
                     <Route path="/subcategory" element={<SubcategoryScreen />} />
+                    <Route path="/products" element={<ProductScreen />} />
                     <Route path={"/"} element={<ProductScreen />} />
                     <Route path="*" element={<div>Error 404</div>} />
                   </Routes>

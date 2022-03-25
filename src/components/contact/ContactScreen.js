@@ -11,8 +11,10 @@ import axios from "../../shared/plugins/axios";
 import Alert, {
   msjConfirmacion,
   msjError,
+  msjExito,
   titleConfirmacion,
   titleError,
+  titleExito,
 } from "../../shared/plugins/alert";
 
 export const ContactScreen = () => {
@@ -65,7 +67,13 @@ export const ContactScreen = () => {
             .then((response) => {
               console.log(response);
               if (!response.error) {
-
+                Alert.fire({
+                  title: titleExito,
+                  text: msjExito,
+                  confirmButtonText: "Aceptar",
+                  confirmButtonColor: "#198754",
+                  icon: "success",
+                });
               }
               return response;
             })
