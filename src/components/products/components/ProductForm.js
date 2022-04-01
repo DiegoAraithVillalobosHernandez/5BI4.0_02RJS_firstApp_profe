@@ -22,12 +22,12 @@ export const ProductForm = ({ isOpen, handleClose, getProducts }) => {
 
   const getSubcategories = (category) => {
     axios({
-      url: `/subcategory/${category}`,
+      url: `/subcategory/category/${category}`,
       method: "GET",
     })
       .then((res) => {
         setSubcategories(res.data);
-        console.log(subcategories)
+        console.log(subcategories);
       })
       .catch((err) => {
         console.log(err);
@@ -37,6 +37,7 @@ export const ProductForm = ({ isOpen, handleClose, getProducts }) => {
   const formik = useFormik({
     initialValues: {
       name: "",
+      brand: "",
       description: "",
       files: [],
       quantity: 0,
@@ -53,15 +54,21 @@ export const ProductForm = ({ isOpen, handleClose, getProducts }) => {
         .string()
         .required("Campo obligatorio")
         .min(3, "Mínimo 3 caracteres"),
+      brand: yup
+        .string()
+        .required("Campo obligatorio")
+        .min(3, "Mínimo 3 caracteres"),
       description: yup
         .string()
         .required("Campo obligatorio")
         .min(3, "Mínimo 3 caracteres"),
       files: yup.mixed().required("Seleccionar imágenes"),
-      quantity: yup.number()
+      quantity: yup
+        .number()
         .required("Campo obligatorio")
         .positive("Número mayor a 0"),
-      price: yup.number()
+      price: yup
+        .number()
         .required("Campo obligatorio")
         .positive("Número mayor a 0"),
       category: yup.number().required("Campo obligatorio"),
@@ -74,7 +81,6 @@ export const ProductForm = ({ isOpen, handleClose, getProducts }) => {
         subcategory: { id: parseInt(values.subcategory) },
         images: [...fileBase64],
       };
-
       Alert.fire({
         title: titleConfirmacion,
         text: msjConfirmacion,
@@ -151,10 +157,16 @@ export const ProductForm = ({ isOpen, handleClose, getProducts }) => {
       reader.onloadend = (data) => {
         setFileBase64((files) => [
           ...files,
-          data.target.result.replace(/^data:image\/\w+;base64,/, ""),
+          {
+            fileBase64: data.target.result.replace(
+              /^data:image\/\w+;base64,/,
+              ""
+            ),
+            name: "images",
+          },
         ]);
-        reader.readAsDataURL(item);
       };
+      reader.readAsDataURL(item);
     });
   };
 
@@ -186,16 +198,32 @@ export const ProductForm = ({ isOpen, handleClose, getProducts }) => {
         <Modal.Body>
           <Form onSubmit={formik.handleSubmit}>
             <Form.Group classname="mb-3">
-              <Form.Label classname="form-label">Nombre</Form.Label>
-              <Form.Control
-                name="name"
-                placeholder="Taza"
-                value={formik.values.name}
-                onChange={formik.handleChange}
-              />
-              {formik.errors.name ? (
-                <span className="error-text">{formik.errors.name}</span>
-              ) : null}
+              <Row>
+                <Col>
+                  <Form.Label classname="form-label">Nombre</Form.Label>
+                  <Form.Control
+                    name="name"
+                    placeholder="Taza"
+                    value={formik.values.name}
+                    onChange={formik.handleChange}
+                  />
+                  {formik.errors.name ? (
+                    <span className="error-text">{formik.errors.name}</span>
+                  ) : null}
+                </Col>
+                <Col>
+                  <Form.Label classname="form-label">Marca</Form.Label>
+                  <Form.Control
+                    name="brand"
+                    placeholder="Razer"
+                    value={formik.values.brand}
+                    onChange={formik.handleChange}
+                  />
+                  {formik.errors.brand ? (
+                    <span className="error-text">{formik.errors.brand}</span>
+                  ) : null}
+                </Col>
+              </Row>
             </Form.Group>
             <Form.Group classname="mb-3">
               <Form.Label classname="form-label">Description</Form.Label>
@@ -266,10 +294,10 @@ export const ProductForm = ({ isOpen, handleClose, getProducts }) => {
                     <option value={""}>Seleccionar</option>
                     {categories.map((item) => {
                       return (
-                      <option value={item.id} key={item.id}>
-                        {item.description}
-                      </option>
-                      )
+                        <option value={item.id} key={item.id}>
+                          {item.description}
+                        </option>
+                      );
                     })}
                   </Form.Select>
                   {formik.errors.category ? (
@@ -286,19 +314,16 @@ export const ProductForm = ({ isOpen, handleClose, getProducts }) => {
                     disabled={subcategories.length === 0}
                   >
                     <option value={""}>Seleccionar</option>
-                    {subcategories.length !== 0 ?
-                    (
-                      subcategories.map((item) => {
-                        /*return(
-                        <option value={item.id} key={item.id}>
-                          {item.description}
-                        </option>
-                        )*/
-                        console.log(item)
-                        return null
-                      })
-                    ): null}
-                    
+                    {subcategories.length !== 0
+                      ? subcategories.map((item) => {
+                          return (
+                            <option value={item.id} key={item.id}>
+                              {item.description}
+                            </option>
+                          );
+                          console.log(item);
+                        })
+                      : null}
                   </Form.Select>
                   {formik.errors.subcategory ? (
                     <span className="error-text">

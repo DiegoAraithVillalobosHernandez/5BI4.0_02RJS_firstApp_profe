@@ -13,12 +13,15 @@ import Alert, {
   msjExito,
 } from "../../shared/plugins/alert";
 import { ProductForm } from "./components/ProductForm";
+import { ProductDetails } from "./components/ProductDetails";
 
 export const ProductScreen = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [products, setProducts] = useState([]);
   const [isCreating, setIsCreating] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
+  const [isDetailsOpen, setIsDetailsOpen] = useState(false);
+  const [productSelected, setProductSelected] = useState({});
 
   const columns = [
     {
@@ -67,7 +70,10 @@ export const ProductScreen = () => {
           <ButtonCircle
             type={"btn btn-circle btn-info me-1"}
             icon="search"
-            onClickFunct={() => {}}
+            onClickFunct={() => {
+                setProductSelected(row);
+                setIsDetailsOpen(true);
+            }}
             size={18}
           />
           <ButtonCircle
@@ -117,8 +123,8 @@ export const ProductScreen = () => {
                       if (!response.error) {
                         setProducts((products) => [
                           statusProduct,
-                          ...products.filter(it => it.id !== row.id)
-                        ])
+                          ...products.filter((it) => it.id !== row.id),
+                        ]);
                         Alert.fire({
                           title: titleExito,
                           text: msjExito,
@@ -150,7 +156,7 @@ export const ProductScreen = () => {
     },
   ];
 
-  const getProducts = () =>{
+  const getProducts = () => {
     axios({
       url: "/product/",
       method: "GET",
@@ -162,7 +168,7 @@ export const ProductScreen = () => {
       .catch((error) => {
         console.log(error);
       });
-  }
+  };
 
   useEffect(() => {
     setIsLoading(true);
@@ -177,16 +183,21 @@ export const ProductScreen = () => {
           <Col>Products</Col>
           <Col className="text-end">
             <ProductForm
-            getProducts={getProducts}
-            isOpen={isCreating}
-            handleClose={()=> setIsCreating(false)}
+              getProducts={getProducts}
+              isOpen={isCreating}
+              handleClose={() => setIsCreating(false)}
+            />
+            <ProductDetails
+              isOpen={isDetailsOpen}
+              handleClose={setIsDetailsOpen(false)}
+              {...productSelected}
             />
             <ButtonCircle
               type={"btn btn-circle btn-success"}
               icon={"plus"}
               size={24}
               onClickFunct={() => {
-                setIsCreating(true)
+                setIsCreating(true);
               }}
             />
           </Col>
