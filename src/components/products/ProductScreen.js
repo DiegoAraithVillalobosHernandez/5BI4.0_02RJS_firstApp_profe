@@ -12,6 +12,7 @@ import Alert, {
   msjError,
   msjExito,
 } from "../../shared/plugins/alert";
+import { ProductForm } from "./components/ProductForm";
 
 export const ProductScreen = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -149,21 +150,24 @@ export const ProductScreen = () => {
     },
   ];
 
-  useEffect(() => {
-    setIsLoading(true);
-    document.title = "MP | Productos";
+  const getProducts = () =>{
     axios({
       url: "/product/",
       method: "GET",
     })
       .then((response) => {
-        console.log(response);
         setProducts(response.data);
         setIsLoading(false);
       })
       .catch((error) => {
         console.log(error);
       });
+  }
+
+  useEffect(() => {
+    setIsLoading(true);
+    document.title = "MP | Productos";
+    getProducts();
   }, []);
 
   return (
@@ -172,12 +176,17 @@ export const ProductScreen = () => {
         <Row className="mt-1">
           <Col>Products</Col>
           <Col className="text-end">
+            <ProductForm
+            getProducts={getProducts}
+            isOpen={isCreating}
+            handleClose={()=> setIsCreating(false)}
+            />
             <ButtonCircle
               type={"btn btn-circle btn-success"}
               icon={"plus"}
               size={24}
               onClickFunct={() => {
-                
+                setIsCreating(true)
               }}
             />
           </Col>
